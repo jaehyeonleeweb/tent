@@ -54,6 +54,7 @@
   </svg>
 
   <script>
+    const BASE_X = -8;
     const BASE_Y = -24;
 
     function randomColor() {
@@ -73,7 +74,7 @@
 
     document.querySelectorAll('svg.letter').forEach(svg => {
       const path = svg.querySelector('path');
-      let posX = 0, posY = BASE_Y;
+      let posX = BASE_X, posY = BASE_Y;
       let startMouseX, startMouseY, startPosX, startPosY;
       let isDragging = false;
 
@@ -109,7 +110,7 @@
         isDragging = false;
         svg.classList.remove('dragging');
         svg.style.zIndex = '';
-        posX = 0;
+        posX = BASE_X;
         posY = BASE_Y;
         setTransform(posX, posY);
       };
