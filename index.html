@@ -87,26 +87,24 @@
 
       setTransform(posX, posY);
 
-      path.addEventListener('mousedown', (e) => {
-        if (e.button !== 0) return;
+      const startDrag = (clientX, clientY) => {
         isDragging = true;
-        startMouseX = e.clientX;
-        startMouseY = e.clientY;
+        startMouseX = clientX;
+        startMouseY = clientY;
         startPosX = posX;
         startPosY = posY;
         svg.classList.add('dragging');
         svg.style.zIndex = 10;
-        e.preventDefault();
-      });
+      };
 
-      document.addEventListener('mousemove', (e) => {
+      const moveDrag = (clientX, clientY) => {
         if (!isDragging) return;
-        posX = startPosX + (e.clientX - startMouseX);
-        posY = startPosY + (e.clientY - startMouseY);
+        posX = startPosX + (clientX - startMouseX);
+        posY = startPosY + (clientY - startMouseY);
         setTransform(posX, posY);
-      });
+      };
 
-      document.addEventListener('mouseup', () => {
+      const endDrag = () => {
         if (!isDragging) return;
         isDragging = false;
         svg.classList.remove('dragging');
@@ -114,7 +112,28 @@
         posX = 0;
         posY = BASE_Y;
         setTransform(posX, posY);
+      };
+
+      path.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        startDrag(e.clientX, e.clientY);
+        e.preventDefault();
       });
+
+      path.addEventListener('touchstart', (e) => {
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+
+      document.addEventListener('touchmove', (e) => {
+        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
     });
   </script>
 </body>
