@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tent</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+    }
+
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(100vw, 100vh);
+      height: min(100vw, 100vh);
+      cursor: grab;
+      pointer-events: none;
+      transition: transform 1.6s cubic-bezier(0.9, 0, 0.92, 0.98);
+      user-select: none;
+    }
+
+    svg.dragging {
+      cursor: grabbing;
+      transition: none;
+    }
+
+    svg path {
+      pointer-events: all;
+      transition: fill 1.2s ease;
+    }
+
+    svg:has(path:hover) path {
+      fill: #000000 !important;
+      transition: fill 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <svg class="letter" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+    <path d="M121.28,178.75c0,5.94-.22,9.35,7.04,9.35h5.39c4.29,0,6.27-.33,7.37-4.62.66-2.53,2.64-4.29,5.28-4.29,2.97,0,5.39,2.31,5.39,5.28s-1.87,6.71-3.63,8.8c-3.85,4.62-8.91,5.39-14.52,5.39h-5.39c-5.28,0-9.9-1.21-13.64-5.28-4.07-4.51-3.85-9.02-3.85-14.74v-28.71h-3.41c-3.08,0-7.26-.66-7.26-5.28s3.74-5.28,7.26-5.28h3.41v-10.78c0-3.63.77-7.26,5.28-7.26s5.28,3.63,5.28,7.26v10.78h17.71c3.52,0,7.26.77,7.26,5.28s-4.18,5.28-7.26,5.28h-17.71v28.82h0Z"/>
+  </svg>
+  <svg class="letter" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+    <path d="M189.48,178.75c0,5.94-.22,9.35,7.04,9.35h5.39c4.29,0,6.27-.33,7.37-4.62.66-2.53,2.64-4.29,5.28-4.29,2.97,0,5.39,2.31,5.39,5.28s-1.87,6.71-3.63,8.8c-3.85,4.62-8.91,5.39-14.52,5.39h-5.39c-5.28,0-9.9-1.21-13.64-5.28-4.07-4.51-3.85-9.02-3.85-14.74v-28.71h-3.41c-3.08,0-7.26-.66-7.26-5.28s3.74-5.28,7.26-5.28h3.41v-10.78c0-3.63.77-7.26,5.28-7.26s5.28,3.63,5.28,7.26v10.78h17.71c3.52,0,7.26.77,7.26,5.28s-4.18,5.28-7.26,5.28h-17.71v28.82h0Z"/>
+  </svg>
+
+  <script>
+    const BASE_Y = -24;
+
+    function randomColor() {
+      const hue = Math.random() * 360;
+      const sat = 75 + Math.random() * 25;   // 75–100%
+      const lit = 42 + Math.random() * 18;   // 42–60%
+      return `hsl(${hue.toFixed(0)}, ${sat.toFixed(0)}%, ${lit.toFixed(0)}%)`;
+    }
+
+    function scheduleColorChange(path) {
+      const delay = 1500 + Math.random() * 3000;
+      setTimeout(() => {
+        path.style.fill = randomColor();
+        scheduleColorChange(path);
+      }, delay);
+    }
+
+    document.querySelectorAll('svg.letter').forEach(svg => {
+      const path = svg.querySelector('path');
+      let posX = 0, posY = BASE_Y;
+      let startMouseX, startMouseY, startPosX, startPosY;
+      let isDragging = false;
+
+      // init color
+      path.style.fill = randomColor();
+      scheduleColorChange(path);
+
+      const setTransform = (x, y) => {
+        svg.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      };
+
+      setTransform(posX, posY);
+
+      path.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        isDragging = true;
+        startMouseX = e.clientX;
+        startMouseY = e.clientY;
+        startPosX = posX;
+        startPosY = posY;
+        svg.classList.add('dragging');
+        svg.style.zIndex = 10;
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        posX = startPosX + (e.clientX - startMouseX);
+        posY = startPosY + (e.clientY - startMouseY);
+        setTransform(posX, posY);
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        svg.classList.remove('dragging');
+        svg.style.zIndex = '';
+        posX = 0;
+        posY = BASE_Y;
+        setTransform(posX, posY);
+      });
+    });
+  </script>
+</body>
+</html>
