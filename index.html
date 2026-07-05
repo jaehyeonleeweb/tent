@@ -4,8 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="favicon.ico" sizes="any" />
+    <link
+      rel="preload"
+      href="tent.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <title>Tent</title>
     <style>
+      @font-face {
+        font-family: "Tent Caslon Email";
+        src: url("tent.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        unicode-range: U+002E, U+0040, U+0063, U+0065-0066, U+0069, U+006D-0070,
+          U+0072-0074;
+      }
+
       :root {
         --margin: 3vw;
         --color-background: #fff;
@@ -65,12 +82,17 @@
         inset: 50% auto auto 50%;
         z-index: 10;
         color: var(--color-foreground);
-        font: 400 1rem/1 serif;
+        font: 400 1rem/1 "Tent Caslon Email";
         text-decoration: none;
         white-space: nowrap;
+        visibility: hidden;
         opacity: 0;
         pointer-events: none;
         transform: translate(-50%, -50%);
+      }
+
+      .scroll-contact.is-font-ready {
+        visibility: visible;
       }
 
       .scroll-contact.is-visible {
@@ -110,6 +132,17 @@
     <script>
       const scrollContact = document.querySelector('.scroll-contact');
       const logo = document.querySelector('.logo');
+
+      document.fonts
+        .load('400 1rem "Tent Caslon Email"', scrollContact.textContent.trim())
+        .then((loadedFonts) => {
+          if (loadedFonts.length > 0) {
+            scrollContact.classList.add('is-font-ready');
+          }
+        })
+        .catch(() => {
+          // Keep the contact hidden rather than showing a fallback font.
+        });
 
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
