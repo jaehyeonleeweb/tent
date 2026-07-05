@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <title>Tent</title>
+    <style>
+      :root {
+        --margin: 3vw;
+        --color-background: #fff;
+        --color-foreground: #000;
+      }
+
+      @media (min-width: 768px) {
+        :root {
+          --margin: 2vw;
+        }
+      }
+
+      @media (min-width: 1440px) {
+        :root {
+          --margin: 1vw;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        min-height: 100dvh;
+        padding: var(--margin);
+        background: var(--color-background);
+      }
+
+      .logo {
+        position: fixed;
+        bottom: var(--margin);
+        left: var(--margin);
+        display: block;
+        width: calc(100% - (var(--margin) * 2));
+        height: auto;
+      }
+
+      .logo :is(path, polygon) {
+        fill: var(--color-foreground);
+        transition: fill 6s ease;
+      }
+
+      .logo :is(path, polygon):hover {
+        fill: var(--color-background);
+      }
+
+      /* SCROLL CONTACT: 삭제하려면 이 CSS 블록과 아래의 같은 이름 블록을 제거하세요. */
+      .scroll-contact {
+        position: fixed;
+        inset: 50% auto auto 50%;
+        z-index: 10;
+        color: var(--color-foreground);
+        font: 400 1rem/1 serif;
+        text-decoration: none;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+      }
+
+      .scroll-contact.is-visible {
+        pointer-events: auto;
+      }
+
+      .scroll-space {
+        position: absolute;
+        top: 100dvh;
+        left: 0;
+        width: 1px;
+        height: 100dvh;
+      }
+      /* /SCROLL CONTACT */
+    </style>
+  </head>
+  <body>
+    <svg
+      class="logo"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 757.35 259.46"
+      role="img"
+      aria-label="Tent"
+    >
+      <polygon points="80.65 150.77 143.76 150.77 143.76 101.68 80.65 101.68 80.65 0 31.56 0 31.56 101.68 0 101.68 0 150.77 31.56 150.77 31.56 252.45 178.82 252.45 80.65 213.88 80.65 150.77" />
+      <path d="M293.88,203.36c-6.64,6.5-15.73,10.52-25.76,10.52-14.69,0-27.36-8.6-33.27-21.04h115.66v-15.78c0-45.51-36.89-82.4-82.4-82.4s-82.4,36.89-82.4,82.4,36.89,82.4,82.4,82.4c19.24,0,36.93-6.61,50.95-17.67v.14l1.05-.96c2.46-2,4.79-4.15,7.01-6.42l34.02-31.18h-67.27,0Z" />
+      <path d="M473.35,87.66l-98.18,164.79h196.35l-98.17-164.79Z" />
+      <polygon points="697.75 101.68 687.23 91.16 687.12 0 638.03 0 638.03 91.27 627.62 101.68 568.02 101.68 568.02 150.77 628.38 150.77 638.03 160.42 638.03 252.45 638.14 252.45 687.12 252.45 687.23 252.45 687.23 160.53 696.99 150.77 757.35 150.77 757.35 101.68 697.75 101.68" />
+    </svg>
+
+    <!-- SCROLL CONTACT: 삭제하려면 CSS/HTML/JS의 같은 이름 블록을 모두 제거하세요. -->
+    <a class="scroll-contact" href="mailto:info@tentpress.com">
+      info@tentpress.com
+    </a>
+    <div class="scroll-space" aria-hidden="true"></div>
+
+    <script>
+      const scrollContact = document.querySelector('.scroll-contact');
+      const logo = document.querySelector('.logo');
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+      function updateScrollEffects() {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = maxScroll > 0 ? clamp(window.scrollY / maxScroll, 0, 1) : 0;
+
+        logo.style.opacity = 1 - progress;
+        scrollContact.style.opacity = progress;
+        scrollContact.classList.toggle('is-visible', progress > 0);
+      }
+
+      updateScrollEffects();
+      window.addEventListener('scroll', updateScrollEffects, { passive: true });
+      window.addEventListener('resize', updateScrollEffects);
+    </script>
+    <!-- /SCROLL CONTACT -->
+  </body>
+</html>
